@@ -355,9 +355,10 @@ def schedule_appointment():
     license_plate = data.get('vehicle_plate')
     service_date_str = data.get('service_date')
     mechanic_id = data.get('mechanic_id')
+    service_id = data.get('service_id')
 
-    if not (user_id and license_plate and service_date_str and mechanic_id):
-        return jsonify({"error": "Missing required data: 'user_id', 'license_plate', 'service_date', and 'mechanic_id'"}), 400
+    if not (user_id and license_plate and service_date_str and mechanic_id and service_id):
+        return jsonify({"error": "Missing required data: 'user_id', 'license_plate', 'service_date', 'mechanic_id', , and 'Service ID'"}), 400
 
     try:
         service_date = datetime.strptime(service_date_str, "%Y-%m-%d %H:%M:%S")
@@ -366,7 +367,7 @@ def schedule_appointment():
 
     status = 'scheduled'
 
-    # Check if user and vehicle exist
+    # Check if user, vehicle, mechanic and service exist
     user = User.query.get(user_id)
     if user is None:
         return jsonify({"error": f"User with ID {user_id} does not exist."}), 404
@@ -378,13 +379,18 @@ def schedule_appointment():
     mechanic = Mechanic.query.get(mechanic_id)
     if mechanic is None:
         return jsonify({"error": f"Mechanic with ID {mechanic_id} does not exist."}), 404
+    
+    service = Service.query.filter_by(id=service_id).first()
+    if service is None:
+        return jsonify({"error":f"Service with id {service_id} does not exist."}),404
 
     new_appointment = Appointment(
         user=user,
         vehicle=vehicle,
         service_date=service_date,
         status=status,
-        mechanic=mechanic
+        mechanic=mechanic,
+        service=service
     )
 
     try:

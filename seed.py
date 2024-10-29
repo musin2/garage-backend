@@ -61,8 +61,8 @@ with app.app_context():
 
     # Creating appointments for users and vehicles
     print("Creating appointments...")
-    appointment1 = Appointment(user=alice, vehicle=vehicle1, service_date=datetime(2024, 10, 20, 9, 0, 0), status="scheduled", mechanic=mechanic1)
-    appointment2 = Appointment(user=bob, vehicle=vehicle2, service_date=datetime(2024, 10, 22, 14, 0, 0), status="scheduled", mechanic=mechanic2)
+    appointment1 = Appointment(user=alice, vehicle=vehicle1, service_date=datetime(2024, 10, 20, 9, 0, 0), status="scheduled", mechanic=mechanic1, service=oil_change)
+    appointment2 = Appointment(user=bob, vehicle=vehicle2, service_date=datetime(2024, 10, 22, 14, 0, 0), status="scheduled", mechanic=mechanic2, service=tire_rotation)
     appointments = [appointment1, appointment2]
 
     # Adding everything to the database

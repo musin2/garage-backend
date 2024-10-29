@@ -73,6 +73,7 @@ class Service(db.Model,SerializerMixin):
 
     # Relationships
     vehicles = db.relationship('ServiceVehicle', back_populates='service', lazy=True)
+    appointments = db.relationship('Appointment', back_populates='service', lazy=True)
 
     serialize_rules = ('-vehicles.service',)
 
@@ -122,12 +123,14 @@ class Appointment(db.Model):
     # Foreign Keys
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id'), nullable=False)
-    mechanic_id = db.Column(db.Integer, db.ForeignKey('mechanics.id'), nullable=True)  # Nullable if no mechanic is assigned yet
+    mechanic_id = db.Column(db.Integer, db.ForeignKey('mechanics.id'), nullable=False)
+    service_id = db.Column(db.Integer, db.ForeignKey('services.id'), nullable=False)
 
     # Relationships
     user = db.relationship('User', back_populates='appointments')
     vehicle = db.relationship('Vehicle', back_populates='appointments')
     mechanic = db.relationship('Mechanic', back_populates='appointments')
+    service = db.relationship('Service', back_populates='appointments')
 
     # Custom method to serialize the Appointment model
     def to_dict(self):
@@ -150,6 +153,10 @@ class Appointment(db.Model):
         'mechanic': {
             'id': self.mechanic.id,
             'name': self.mechanic.name
-        } if self.mechanic else None  # Mechanic may be None
+        } if self.mechanic else None,  # Mechanic may be None
+        'service': {
+            'id': self.service.id,
+            'name': self.service.service_name
+        } if self.service else None  # Service check
     }
 
